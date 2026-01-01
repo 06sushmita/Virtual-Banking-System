@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Virtual Banking System - Login</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(circle at top, #6a7cff, #4b2b82);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 450px;
+      background: #ffffff;
+      border-radius: 18px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+      overflow: hidden;
+      animation: fadeUp 0.7s ease;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(25px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      padding: 32px;
+      text-align: center;
+      color: white;
+    }
+
+    .header h1 {
+      font-size: 30px;
+      letter-spacing: 1px;
+    }
+
+    .header p {
+      font-size: 13px;
+      opacity: 0.9;
+      margin-top: 6px;
+    }
+
+    .content {
+      padding: 42px 30px;
+    }
+
+    h2 {
+      color: #2d2d2d;
+      margin-bottom: 22px;
+      text-align: center;
+      font-size: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      color: #333;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid #e2e2e2;
+      border-radius: 9px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      transition: all 0.3s ease;
+      margin-top: 6px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.45);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    .link {
+      text-align: center;
+      margin-top: 18px;
+      color: #666;
+      font-size: 13px;
+    }
+
+    .link a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .link a:hover {
+      text-decoration: underline;
+    }
+
+    .message {
+      padding: 12px;
+      border-radius: 9px;
+      margin-bottom: 18px;
+      font-size: 13px;
+      display: none;
+      text-align: center;
+    }
+
+    .message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .message.show {
+      display: block;
+    }
+    .subtitle {
+    text-align: center;
+    font-size: 13px;
+    color: #777;
+    margin-bottom: 22px;
+}
+
+.trust {
+    margin-top: 14px;
+    text-align: center;
+    font-size: 12px;
+    color: #777;
+}
+
+  </style>
+</head>
+
+<body>
+<div class="container">
+  <div class="header">
+    <h1>VBS</h1>
+    <p>Virtual Banking System</p>
+  </div>
+
+  <div class="content">
+    <h2>Login</h2>
+    <div class="subtitle">Secure access • Step 2 of 2</div>
+
+
+    <div id="loginMessage" class="message"></div>
+
+    <!-- FORM UNCHANGED -->
+    <form id="loginForm">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="loginUsername" required>
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPassword" required>
+      </div>
+
+      <div class="form-group">
+        <label>Role</label>
+        <select id="loginRole" required>
+          <option value="">Select Role</option>
+          <option value="customer">Customer</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn">Login</button>
+    </form>
+
+    <div class="trust">🔒 Your session is encrypted & secure</div>
+
+    <div class="link">
+      Don't have an account?
+      <a onclick="window.location.href='signup.html'">Sign Up</a>
+    </div>
+    <div class="link">
+      <a onclick="window.location.href='home.html'">← Back to Home</a>
+    </div>
+  </div>
+</div>
+
+<!-- 🔒 SCRIPT IS 100% YOUR ORIGINAL CODE (UNCHANGED) -->
+<script>
+  const API_URL = 'http://localhost:8081';
+
+  function showMessage(elementId, message, type) {
+      const messageEl = document.getElementById(elementId);
+      messageEl.textContent = message;
+      messageEl.className = `message ${type} show`;
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const loginData = {
+          username: document.getElementById('loginUsername').value,
+          password: document.getElementById('loginPassword').value,
+          role: document.getElementById('loginRole').value
+      };
+
+      try {
+          const response = await fetch(`${API_URL}/login`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(loginData)
+          });
+
+          const result = (await response.text()).trim();
+
+          if (/^\d+$/.test(result)) {
+              showMessage('loginMessage', 'Login successful! Redirecting...', 'success');
+
+              localStorage.clear();
+              localStorage.setItem("userId", result);
+
+              const role = loginData.role.trim().toLowerCase();
+              localStorage.setItem("role", role);
+
+              setTimeout(() => {
+                if (role === "admin") {
+                  window.location.href = `admin.html?id=${result}`;
+                } else {
+                  window.location.href = `dashboard.html?id=${result}`;
+                }
+              }, 800);
+
+          } else {
+              showMessage('loginMessage', result, 'error');
+          }
+      } catch (error) {
+          showMessage('loginMessage', 'Error connecting to server. Please try again.', 'error');
+          console.error('Login error:', error);
+      }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Passbook - Virtual Banking System</title>
+
+  <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+        position: relative;
+    }
+
+    /* Animated background particles */
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image:
+            radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: auto;
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        position: relative;
+        z-index: 1;
+        animation: fadeInUp 0.6s ease;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Header Styles */
+    .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 35px 40px;
+        color: #fff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .bank-logo {
+        width: 50px;
+        height: 50px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .header-left h1 {
+        font-size: 32px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    .header-left p {
+        font-size: 14px;
+        opacity: 0.9;
+        margin-top: 4px;
+        font-weight: 300;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .btn-header {
+        padding: 12px 24px;
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        background: rgba(255, 255, 255, 0.15);
+        color: #fff;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 130px;
+        height: 44px;
+    }
+
+    .btn-header:hover {
+        background: #fff;
+        color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-header:active {
+        transform: translateY(0);
+    }
+
+    /* Content Area */
+    .content {
+        padding: 50px 40px;
+        background: linear-gradient(to bottom, #f8f9fc 0%, #ffffff 100%);
+    }
+
+    .passbook-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .passbook-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .passbook-title h2 {
+        font-size: 28px;
+        color: #2d3748;
+        font-weight: 700;
+    }
+
+    .passbook-icon {
+        font-size: 32px;
+    }
+
+    /* Balance Card */
+    .balance-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #fff;
+        padding: 25px 35px;
+        border-radius: 16px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        min-width: 280px;
+        transition: all 0.3s ease;
+    }
+
+    .balance-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+    }
+
+    .balance-card::before {
+        content: '💰';
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        font-size: 48px;
+        opacity: 0.15;
+    }
+
+    .balance-card p {
+        font-size: 13px;
+        opacity: 0.9;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+    }
+
+    .balance-card .amount {
+        font-size: 36px;
+        font-weight: 800;
+        letter-spacing: -1px;
+    }
+
+    /* Transactions Section */
+    .transactions-section {
+        background: #fff;
+        padding: 35px;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e2e8f0;
+    }
+
+    .transactions-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 25px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .transactions-header h3 {
+        font-size: 20px;
+        color: #2d3748;
+        font-weight: 700;
+    }
+
+    .transactions-count {
+        background: #667eea;
+        color: #fff;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .transactions-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    /* Transaction Items */
+    .transaction-item {
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-left: 4px solid #667eea;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        transition: all 0.3s ease;
+        border: 1px solid #e2e8f0;
+    }
+
+    .transaction-item:hover {
+        transform: translateX(4px);
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+        border-left-width: 6px;
+    }
+
+    .transaction-item.deposit {
+        border-left-color: #10b981;
+        background: linear-gradient(to right, rgba(16, 185, 129, 0.02) 0%, #fff 15%);
+    }
+
+    .transaction-item.withdrawal {
+        border-left-color: #ef4444;
+        background: linear-gradient(to right, rgba(239, 68, 68, 0.02) 0%, #fff 15%);
+    }
+
+    .transaction-item.transfer {
+        border-left-color: #3b82f6;
+        background: linear-gradient(to right, rgba(59, 130, 246, 0.02) 0%, #fff 15%);
+    }
+
+    .transaction-info {
+        display: flex;
+        gap: 18px;
+        align-items: center;
+        flex: 1;
+    }
+
+    .transaction-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        flex-shrink: 0;
+        transition: transform 0.3s ease;
+    }
+
+    .transaction-item:hover .transaction-icon {
+        transform: scale(1.1);
+    }
+
+    .deposit .transaction-icon {
+        background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+        color: #10b981;
+    }
+
+    .withdrawal .transaction-icon {
+        background: linear-gradient(135deg, #fee2e2, #fecaca);
+        color: #ef4444;
+    }
+
+    .transfer .transaction-icon {
+        background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+        color: #3b82f6;
+    }
+
+    .transaction-details {
+        flex: 1;
+    }
+
+    .transaction-details .type {
+        font-weight: 600;
+        color: #1a202c;
+        font-size: 15px;
+        margin-bottom: 4px;
+    }
+
+    .transaction-details .date {
+        font-size: 13px;
+        color: #718096;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .transaction-details .date::before {
+        content: '🕐';
+        font-size: 12px;
+    }
+
+    .transaction-right {
+        text-align: right;
+        min-width: 160px;
+    }
+
+    .transaction-amount {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .deposit .transaction-amount {
+        color: #10b981;
+    }
+
+    .withdrawal .transaction-amount {
+        color: #ef4444;
+    }
+
+    .transfer .transaction-amount {
+        color: #3b82f6;
+    }
+
+    .balance-display {
+        font-size: 12px;
+        color: #718096;
+        font-weight: 500;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #718096;
+    }
+
+    .empty-state-icon {
+        font-size: 64px;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+
+    .empty-state h3 {
+        font-size: 20px;
+        margin-bottom: 10px;
+        color: #2d3748;
+    }
+
+    .empty-state p {
+        font-size: 14px;
+    }
+
+    /* Pagination */
+    .pagination {
+        margin-top: 30px;
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .pagination button {
+        padding: 10px 16px;
+        border: 2px solid #e2e8f0;
+        background: #fff;
+        color: #4a5568;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        min-width: 42px;
+    }
+
+    .pagination button:hover {
+        border-color: #667eea;
+        color: #667eea;
+        transform: translateY(-2px);
+    }
+
+    .pagination button.active {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: #fff;
+        border-color: transparent;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .pagination button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    /* Loading State */
+    .loading {
+        text-align: center;
+        padding: 40px;
+        color: #718096;
+    }
+
+    .spinner {
+        border: 3px solid #e2e8f0;
+        border-top: 3px solid #667eea;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .container {
+            border-radius: 0;
+            margin: -20px;
+        }
+
+        .header {
+            flex-direction: column;
+            gap: 20px;
+            align-items: flex-start;
+            padding: 25px;
+        }
+
+        .header-actions {
+            width: 100%;
+            justify-content: stretch;
+        }
+
+        .btn-header {
+            flex: 1;
+        }
+
+        .content {
+            padding: 30px 20px;
+        }
+
+        .passbook-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .balance-card {
+            width: 100%;
+        }
+
+        .transaction-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .transaction-right {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .balance-card .amount {
+            font-size: 28px;
+        }
+    }
+
+    /* Print Styles */
+    @media print {
+        body {
+            background: white;
+            padding: 0;
+        }
+
+        .header-actions,
+        .pagination {
+            display: none;
+        }
+
+        .transaction-item {
+            break-inside: avoid;
+        }
+    }
+  </style>
+</head>
+
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="header-left">
+      <div class="bank-logo">🏦</div>
+      <div>
+        <h1>VBS</h1>
+        <p>Virtual Banking System</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <a id="dashLink" class="btn-header">← Dashboard</a>
+      <button class="btn-header" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="passbook-header">
+      <div class="passbook-title">
+        <span class="passbook-icon">📘</span>
+        <h2>Your Passbook</h2>
+      </div>
+      <div class="balance-card">
+        <p>Current Balance</p>
+        <div class="amount">₹<span id="currentBalance">0.00</span></div>
+      </div>
+    </div>
+
+    <div class="transactions-section">
+      <div class="transactions-header">
+        <h3>Transaction History</h3>
+        <span class="transactions-count" id="transactionCount">0</span>
+      </div>
+      <div id="transactionsList" class="transactions-list">
+        <div class="loading">
+          <div class="spinner"></div>
+          <p>Loading transactions...</p>
+        </div>
+      </div>
+      <div id="paginationControls" class="pagination"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const API_URL = 'http://localhost:8081';
+  let userId, role;
+  let transactions = [];
+  let currentPage = 1;
+  const itemsPerPage = 10;
+
+  function getUserIdFromURL(){
+      const p = new URLSearchParams(window.location.search);
+      userId = p.get('id');
+      role = p.get('role') || 'customer';
+      if(!userId) location.href='login.html';
+      document.getElementById('dashLink').href =
+          `dashboard.html?id=${userId}&role=${encodeURIComponent(role)}`;
+  }
+
+  async function loadPassbook(){
+      const r = await fetch(`${API_URL}/passbook/${userId}`);
+      transactions = await r.json();
+
+      // Update transaction count
+      document.getElementById('transactionCount').textContent = transactions.length;
+
+      if(transactions.length) {
+          document.getElementById('currentBalance').textContent =
+              transactions[transactions.length-1].currBalance.toFixed(2);
+      } else {
+          // Show empty state
+          document.getElementById('transactionsList').innerHTML = `
+              <div class="empty-state">
+                  <div class="empty-state-icon">📭</div>
+                  <h3>No Transactions Yet</h3>
+                  <p>Your transaction history will appear here once you start banking.</p>
+              </div>
+          `;
+          return;
+      }
+
+      render();
+  }
+
+  function getType(d){
+      d=d.toLowerCase();
+      if(d.includes('deposit')) return 'deposit';
+      if(d.includes('withdrawal')) return 'withdrawal';
+      return 'transfer';
+  }
+
+  function render(){
+      const list = document.getElementById('transactionsList');
+      const pag = document.getElementById('paginationControls');
+
+      const sorted=[...transactions].sort((a,b)=>new Date(b.date)-new Date(a.date));
+      const totalPages=Math.ceil(sorted.length/itemsPerPage);
+      const slice=sorted.slice((currentPage-1)*itemsPerPage,currentPage*itemsPerPage);
+
+      list.innerHTML=slice.map(t=>{
+          const type = getType(t.description);
+
+          let sign = '-';
+          if(type === 'deposit') sign = '+';
+          else if(type === 'transfer' && t.description.toLowerCase().includes('received'))
+              sign = '+';
+
+          const icon = type==='deposit'?'📥':type==='withdrawal'?'💸':'🔁';
+
+          return `
+          <div class="transaction-item ${type}">
+              <div class="transaction-info">
+                  <div class="transaction-icon">${icon}</div>
+                  <div class="transaction-details">
+                      <div class="type">${t.description}</div>
+                      <div class="date">${new Date(t.date).toLocaleString('en-IN')}</div>
+                  </div>
+              </div>
+              <div class="transaction-right">
+                  <div class="transaction-amount">${sign}₹${t.amount.toFixed(2)}</div>
+                  <div class="balance-display">Balance: ₹${t.currBalance.toFixed(2)}</div>
+              </div>
+          </div>`;
+      }).join('');
+
+      // Pagination
+      pag.innerHTML='';
+
+      if(totalPages > 1) {
+          // Previous button
+          pag.innerHTML+=`<button onclick="go(${currentPage-1})" ${currentPage===1?'disabled':''}>←</button>`;
+
+          // Page numbers
+          for(let i=1;i<=totalPages;i++){
+              if(totalPages <= 7 || i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                  pag.innerHTML+=`<button class="${i===currentPage?'active':''}" onclick="go(${i})">${i}</button>`;
+              } else if(i === currentPage - 2 || i === currentPage + 2) {
+                  pag.innerHTML+=`<button disabled>...</button>`;
+              }
+          }
+
+          // Next button
+          pag.innerHTML+=`<button onclick="go(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>→</button>`;
+      }
+  }
+
+  function go(p){
+      if(p < 1 || p > Math.ceil(transactions.length/itemsPerPage)) return;
+      currentPage=p;
+      render();
+      // Smooth scroll to top of transactions
+      document.querySelector('.transactions-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function logout(){
+      location.href='home.html';
+  }
+
+  window.onload=()=>{
+      getUserIdFromURL();
+      loadPassbook();
+  }
+</script>
+</body>
+</html>
